@@ -1,0 +1,67 @@
+<template>
+  <div id="login-box">
+    <h1>登录</h1>
+    <div class="form">
+      <form action="/login" method="post">
+        <div class="item">
+          <i class="fa fa-github-alt" style="font-size:24px"></i>
+          <input type="text" name="username" placeholder="用户名">
+        </div>
+        <div class="item">
+          <i class="fa fa-search" style="font-size:24px"></i>
+          <input type="password" name="password" placeholder="密码">
+        </div>
+        <button type="submit">登录</button>
+      </form>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Login"
+}
+</script>
+
+<style scoped>
+#login-box{
+  width:30%;
+  height:auto;
+  margin:0 auto ;
+  margin-top:13%;
+  text-align:center;
+  background:#00000060;
+  padding:20px 50px;
+}
+#login-box h1{
+  color:#fff;
+}
+#login-box .form .item{
+  margin-top:15px;
+}
+#login-box .form .item i{
+  font-size:18px;
+  color:#fff;
+}
+#login-box .form .item input{
+  width:180px;
+  font-size:18px;
+  border:0;
+  border-bottom:2px solid #fff;
+  padding:5px 10px;
+  background: rgba(255, 255, 255, 0.32);
+  color:#fff;
+}
+#login-box 	button{
+  margin-top:20px;
+  width:190px;
+  height:30px;
+  font-size:20px;
+  font-weight:700;
+  color: rgba(70, 71, 62, 0.72);
+  /*background-image: linear-gradient(to right, #74ebd5 0%, #9face6 100%);*/
+  /*background-image:#74ebd5;*/
+  border:0;
+  border-radius:15px;
+}
+</style>

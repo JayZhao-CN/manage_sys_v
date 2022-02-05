@@ -5,14 +5,20 @@ import 'element-plus/dist/index.css'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import * as echarts from 'echarts'
+import * as ElIcons from '@element-plus/icons'
 
 import '@/assets/css/global.css'
 
-createApp(App)
-    .use(ElementPlus, {
+const app = createApp(App)
+for (const name in ElIcons){
+    app.component(name)
+}
+app.use(ElementPlus, {
         locale: zhCn,
     })
-    .use(store)
-    .use(router)
-    .use(ElementPlus)
-    .mount('#app')
+app.use(store)
+app.use(router)
+app.use(ElementPlus)
+app.echarts = echarts
+app.mount('#app')

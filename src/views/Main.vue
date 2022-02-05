@@ -1,10 +1,10 @@
 <template>
   <!--    头部-->
   <Header/>
+  <!--      侧边栏-->
+  <Aside/>
   <!--    主体-->
-  <div style="display: flex">
-    <!--      侧边栏-->
-    <Aside/>
+  <div>
     <!--      内容-->
     <router-view/>
   </div>
@@ -13,11 +13,14 @@
 <script>
 import Header from "../components/Header";
 import Aside from "../components/Aside";
+
 export default {
   name: "Main",
-  components:{
+  components: {
     Header,
     Aside
+  },
+  created() {
   }
 }
 </script>

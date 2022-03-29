@@ -1,6 +1,7 @@
 <template>
 <div>
   <el-col>
+    <el-scrollbar height = "calc(100vh - 65px)">
     <el-menu
         style="width: 200px; min-height: calc(100vh - 65px)"
         :uniqueOpened="false"
@@ -53,8 +54,10 @@
           <span>产品信息维护</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="select">颜色</el-menu-item>
-          <el-menu-item index="add">样式</el-menu-item>
+          <el-menu-item index="color">颜色</el-menu-item>
+          <el-menu-item index="style">样式</el-menu-item>
+          <el-menu-item index="size">尺寸</el-menu-item>
+          <el-menu-item index="type">种类</el-menu-item>
         </el-menu-item-group>
       </el-sub-menu>
 
@@ -68,6 +71,7 @@
         </el-menu-item-group>
       </el-sub-menu>
     </el-menu>
+    </el-scrollbar>
   </el-col>
 </div>
 </template>

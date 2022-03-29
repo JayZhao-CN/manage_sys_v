@@ -72,7 +72,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-dialog v-model="dialogFormVisible" title="添加员工">
+    <el-dialog v-model="dialogFormVisible" title="添加员工" :before-close="hideCommit">
       <el-form ref="formRef" :model="form" label-width="120px">
         <el-form-item label="已有账号？">
           <div>
@@ -93,13 +93,13 @@
 
         </el-form-item>
         <div v-show="haveAcc === '2'">
-          <el-form-item label="姓名">
-            <el-input v-model="form.name"></el-input>
-          </el-form-item>
           <el-form-item label="联系方式">
             <el-input v-model="form.phone"></el-input>
           </el-form-item>
         </div>
+        <el-form-item label="姓名">
+          <el-input v-model="form.name"></el-input>
+        </el-form-item>
         <el-form-item label="岗位">
           <el-select v-model="selectedPosition" multiple placeholder="请选择岗位">
             <el-option
@@ -124,7 +124,7 @@
       </span>
       </template>
     </el-dialog>
-    <el-dialog v-model="dialogChangeVisible" title="修改信息">
+    <el-dialog v-model="dialogChangeVisible" title="修改信息" :before-close="hideChange">
       <el-form ref="formRef" :model="changeList" label-width="120px">
         <el-form-item label="姓名">
           <el-input v-model="changeList.uUsername" size="60px"></el-input>
@@ -154,7 +154,7 @@
       </el-form>
       <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogChangeVisible = false">取消</el-button>
+        <el-button @click="hideChange">取消</el-button>
         <el-button type="primary" @click="commitChange" v-loading="loading"
         >修改</el-button
         >
@@ -226,11 +226,10 @@ export default {
   methods: {
     // 查询表内数据
     queryData() {
-
       // get 页面和公司名
       request.get("/sys_user/detail" + "?" + "pageNum=" + this.pageNum + "&&" + "pageSize=" + this.pageSize + "&&" + "uCompany=" + this.$store.state.currentCompany.companyCode).then(res => {
-        console.log(res);
         this.dataList = res.dataInfo.dataInfo.list !== null ? res.dataInfo.dataInfo.list : []
+        console.log(this.dataList);
         this.currentPage = res.dataInfo.dataInfo.pageNum
         this.pageNum = res.dataInfo.dataInfo.pageNum
         this.total = res.dataInfo.dataInfo.total
@@ -238,8 +237,8 @@ export default {
     },
 
     // 查询岗位信息
-    queryPosition() {
-      request.get("/sys_position/detail" + "?" + "pageNum=" + this.pageNum + "&&" + "pageSize=" + this.pageSize + "&&" + "company=" + this.$store.state.currentCompany.companyCode).then(res => {
+    async queryPosition() {
+      await request.get("/sys_position/detail" + "?" + "company=" + this.$store.state.currentCompany.companyCode).then(res => {
         this.position = res.dataInfo.dataInfo.list !== null ? res.dataInfo.dataInfo.list : []
       })
     },
@@ -250,23 +249,55 @@ export default {
     },
 
     // 提交添加信息
-    commitAdd() {
+    async commitAdd() {
       if (this.form.name === "") {
         this.msgAlert("失败", "请填写姓名！", "error")
         return
       }
       let myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
-      if (!myreg.test(this.form.phone)) {
+      if (this.haveAcc === '2' && !myreg.test(this.form.phone)) {
         this.msgAlert("失败", "手机号填写错误！", "error")
         return
       }
-      if (this.selectedPosition === "") {
+      if (this.selectedPosition.length === 0) {
         this.msgAlert("失败", "请选择岗位！", "error")
         return
       }
 
       // 已有账号
       if (this.haveAcc === '1') {
+        this.loading = true
+        // 先核验账号和名称
+        await this.queriedCode()
+        if (this.queriedName === this.form.name){
+          let formData = new FormData();
+          formData.set("new", "false")
+          formData.set("uCode", this.form.code)
+          formData.set("uUsername", this.form.name)
+          formData.set("uPositions", this.selectedPosition)
+          formData.set("uNickCode", this.form.nickCode)
+          formData.set("uCompany", this.$store.state.currentCompany.companyCode)
+
+          await request.post("/sys_user/add", formData).then(res => {
+            this.loading = false
+            if (res.code === 100) {
+                this.loading = false
+                this.form = []
+                this.selectedPosition = []
+                this.queriedName = ''
+                res.dataInfo.state === 1 ? this.dialogFormVisible = false : this.dialogFormVisible = false
+                this.queryData()
+                this.msgAlert("成功", "添加成功！", "success")
+            } else {
+              this.loading = false
+              this.msgAlert("失败", res.dataInfo.msg, "warning")
+            }
+
+          })
+        }else {
+          this.loading = false
+          this.msgAlert("失败", "账号用户名和添加用户名不一致，请核验！", "warning")
+        }
 
       }
       // 没有账号
@@ -292,11 +323,11 @@ export default {
             } else {
               this.loading = false
               this.form = []
+              this.selectedPosition = []
               res.dataInfo.state === 1 ? this.dialogFormVisible = false : this.dialogFormVisible = false
               this.queryData()
               this.msgAlert("成功", "添加成功！", "success")
             }
-
           } else {
             this.loading = false
             this.msgAlert("失败", res.dataInfo.msg, "warning")
@@ -306,9 +337,10 @@ export default {
       }
     },
 
-    // 添加已存在的用户
-    clickAddHad() {
-
+    // 隐藏修改框
+    hideChange(){
+      this.currentPosition = []
+      this.dialogChangeVisible = false
     },
 
     // 提交修改信息
@@ -318,22 +350,31 @@ export default {
       formData.set("uId", this.changeList.uId)
       formData.set("uUsername", this.changeList.uUsername)
       formData.set("uPhone", this.changeList.uPhone)
-      formData.set("uPosition", this.selectedPosition)
+      formData.set("uPosition", this.currentPosition)
       formData.set("uNickCode", this.changeList.uNickCode)
       formData.set("resetPw", this.resetPw)
-      formData.set("uCompany", this.$store.state.company)
+      formData.set("uCompany", this.$store.state.currentCompany.companyCode)
       request.post("/sys_user/change", formData).then(res => {
         this.loading = false
+        this.queryData()
         this.dialogChangeVisible = false
         this.changeList = []
+        this.currentPosition = []
       })
     },
 
     // 修改按钮
-    clickChange(index) {
-      this.queryPosition()
+    async clickChange(index) {
       this.changeList = this.dataList[index]
-      this.currentPosition = this.changeList.uPositionDetail
+      await this.queryPosition()
+      let rowPosition = this.changeList.uPosition;
+      let rowPositions = rowPosition.toString().split("/");
+      let that = this
+      rowPositions.forEach(function (value){
+        if (value !== ''){
+          that.currentPosition.push(value)
+        }
+      })
       this.dialogChangeVisible = true
     },
     // 删除按钮
@@ -358,9 +399,9 @@ export default {
     },
 
     // 添加 员工查询编号
-    queriedCode() {
+    async queriedCode() {
       if (this.form.code.length >= 6) {
-        request.get("/sys_user/query/" + this.form.code).then(res => {
+        await request.get("/sys_user/query/" + this.form.code).then(res => {
           this.queriedName = res.dataInfo.username
         })
       }

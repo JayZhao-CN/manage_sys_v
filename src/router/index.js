@@ -1,6 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import Home from '../views/Home.vue'
-import Select from "../views/Select";
 import Add from "../views/Add";
 import Update from "../views/Update";
 import Delete from "../views/Delete";
@@ -8,6 +7,10 @@ import Login from "../views/Login";
 import Main from "../views/Main";
 import Personal from "../views/Personal";
 import User from "../views/User";
+import Color from "../views/Color";
+import Style from "../views/Style";
+import Size from "../views/Size";
+import Type from "../views/Type";
 
 const routes = [
     {
@@ -24,19 +27,29 @@ const routes = [
             component: Home,
         },
             {
-                path: '/select',
-                name: 'Select',
-                component: Select
-            },
-            {
                 path: '/user',
                 name: 'User',
                 component: User
             },
             {
-                path: '/add',
-                name: 'Add',
-                component: Add
+                path: '/color',
+                name: 'Color',
+                component: Color
+            },
+            {
+                path: '/style',
+                name: 'Style',
+                component: Style
+            },
+            {
+                path: '/size',
+                name: 'Size',
+                component: Size
+            },
+            {
+                path: '/type',
+                name: 'Type',
+                component: Type
             },
             {
                 path: '/update',

@@ -41,7 +41,7 @@
         </template>
         <el-menu-item-group>
           <template #title>生产</template>
-          <el-menu-item index="update">工序</el-menu-item>
+          <el-menu-item index="product">产品</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group title="成品">
           <el-menu-item index="delete">订单</el-menu-item>
@@ -54,10 +54,21 @@
           <span>产品信息维护</span>
         </template>
         <el-menu-item-group>
+          <template #title>生产配置</template>
+          <el-menu-item index="propties">产品-属性</el-menu-item>
+          <el-menu-item index="type_process">产品-工序</el-menu-item>
+        </el-menu-item-group>
+        <el-menu-item-group>
+          <template #title>基础属性</template>
           <el-menu-item index="color">颜色</el-menu-item>
           <el-menu-item index="style">样式</el-menu-item>
           <el-menu-item index="size">尺寸</el-menu-item>
           <el-menu-item index="type">种类</el-menu-item>
+          <el-menu-item index="process">工序</el-menu-item>
+        </el-menu-item-group>
+        <el-menu-item-group>
+          <template #title>扩展</template>
+          <el-menu-item index="color">属性扩展</el-menu-item>
         </el-menu-item-group>
       </el-sub-menu>
 

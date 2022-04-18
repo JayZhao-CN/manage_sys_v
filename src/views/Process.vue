@@ -5,9 +5,9 @@
         <div>
           <el-table :data="dataList" ref="multipleTable" style="font-weight: bold; font-size: 18px"
                     :header-cell-style="{background:'#d0d3d7',color:'#555555'}" stripe>
-            <el-table-column property="tId" label="ID" key="tId"/>
-            <el-table-column property="tName" label="类型名（老年装/童装/挡风被）" key="tName"/>
-            <el-table-column property="tCode" label="类型编号" key="tCode"/>
+            <el-table-column property="prcId" label="ID" key="prcId"/>
+            <el-table-column property="prcName" label="产品编号" key="prcName"/>
+            <el-table-column property="prcCode" label="工序编号" key="prcCode"/>
             <el-table-column align="right" key="option">
               <template #header>
                 <span style="float: left">操作</span>
@@ -26,7 +26,7 @@
                   >
                     <template #reference>
                       <el-button type="danger"
-                                 @click="this.ensureTitle = '删除' + this.dataList[scope.$index].tName + '?' ">删除
+                                 @click="this.ensureTitle = '删除' + this.dataList[scope.$index].prcName + '?' ">删除
                       </el-button>
                     </template>
                   </el-popconfirm>
@@ -62,9 +62,9 @@
         </div>
       </el-col>
     </el-row>
-    <el-dialog v-model="dialogFormVisible" title="新增类型" :before-close="hideCommit">
+    <el-dialog v-model="dialogFormVisible" title="新增工序" :before-close="hideCommit">
       <el-form ref="formRef" :model="form" label-width="120px">
-        <el-form-item label="类型名称">
+        <el-form-item label="工序名称">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
       </el-form>
@@ -80,7 +80,7 @@
     <el-dialog v-model="dialogChangeVisible" title="修改类型" :before-close="hideChange">
       <el-form ref="formRef" :model="changeList" label-width="120px">
         <el-form-item label="类型名称">
-          <el-input v-model="changeList.tName"></el-input>
+          <el-input v-model="changeList.prcName"></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -140,7 +140,7 @@ export default {
     // 查询表内数据
     queryData() {
       // get 页面和公司名
-      request.get("/sys_type/detail" + "?" + "pageNum=" + this.pageNum + "&&" + "pageSize=" + this.pageSize + "&&" + "tCompany=" + this.$store.state.currentCompany.companyCode).then(res => {
+      request.get("/sys_process/detail" + "?" + "pageNum=" + this.pageNum + "&&" + "pageSize=" + this.pageSize + "&&" + "prcCompany=" + this.$store.state.currentCompany.companyCode).then(res => {
         console.log(res);
         this.dataList = res.dataInfo.dataInfo.list !== null ? res.dataInfo.dataInfo.list : []
         // console.log(this.dataList);
@@ -166,16 +166,16 @@ export default {
     // 提交添加信息
     async commitAdd() {
       if (this.form.name === "" || this.form.name === undefined) {
-        this.msgAlert("失败", "请填写类型名称！", "error")
+        this.msgAlert("失败", "请填写工序名称！", "error")
         return
       }
 
       this.loading = true
       let formData = new FormData();
-      formData.set("tName", this.form.name)
-      formData.set("tCompany", this.$store.state.currentCompany.companyCode)
+      formData.set("prcName", this.form.name)
+      formData.set("prcCompany", this.$store.state.currentCompany.companyCode)
 
-      await request.post("/sys_type/add", formData).then(res => {
+      await request.post("/sys_process/add", formData).then(res => {
         this.loading = false
         if (res.code === 100) {
           this.loading = false
@@ -205,18 +205,18 @@ export default {
 
     // 提交修改信息
     async commitChange() {
-      if (this.changeList.tName === "") {
+      if (this.changeList.prcName === "") {
         this.msgAlert("失败", "尺寸名称不能为空！", "error")
         return
       }
 
       this.loading = true
       let formData = new FormData();
-      formData.set("tId", this.changeList.tId)
-      formData.set("tName", this.changeList.tName)
-      formData.set("tCompany", this.$store.state.currentCompany.companyCode)
+      formData.set("prcId", this.changeList.prcId)
+      formData.set("prcName", this.changeList.prcName)
+      formData.set("prcCompany", this.$store.state.currentCompany.companyCode)
 
-      await request.post("/sys_type/change", formData).then(res => {
+      await request.post("/sys_process/change", formData).then(res => {
         this.loading = false
         if (res.code === 100) {
           this.loading = false
@@ -236,7 +236,7 @@ export default {
 
     // 删除按钮
     clickDelete(item) {
-      request.get("/sys_type/delete" + "?" + "tId=" + this.dataList[item].tId + "&&" + "tCompany=" + this.$store.state.currentCompany.companyCode).then(res => {
+      request.get("/sys_process/delete" + "?" + "prcId=" + this.dataList[item].prcId + "&&" + "prcCompany=" + this.$store.state.currentCompany.companyCode).then(res => {
         this.queryData()
       })
     },

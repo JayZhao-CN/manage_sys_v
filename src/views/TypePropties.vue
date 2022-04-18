@@ -1,13 +1,31 @@
 <template>
   <div>
-    <el-row>
+    <el-row style="background-color: #475669">
+      <el-col :span="8">
+        <div style="margin-top: 10px; margin-bottom: 10px; margin-left: 2px">
+      <el-input
+          placeholder="请输入关键字（通过逗号分离筛选条件）"
+          v-model="keywordInput">
+      </el-input>
+        </div>
+      </el-col>
+      <el-col :span="4">
+        <div style="margin-top: 10px">
+        <el-button>
+          <el-icon style="vertical-align: middle;">
+            <search />
+          </el-icon>
+          筛选</el-button>
+        </div>
+      </el-col>
+    </el-row>
+    <el-row :gutter="0">
       <el-col :span="24">
         <div>
           <el-table :data="dataList" ref="multipleTable" style="font-weight: bold; font-size: 18px"
                     :header-cell-style="{background:'#d0d3d7',color:'#555555'}" stripe>
-            <el-table-column property="tId" label="ID" key="tId"/>
-            <el-table-column property="tName" label="类型名（老年装/童装/挡风被）" key="tName"/>
-            <el-table-column property="tCode" label="类型编号" key="tCode"/>
+            <el-table-column property="typeName" label="类型名" key="typeName"/>
+            <el-table-column property="typePropties" label="已配置属性" key="typePropties"/>
             <el-table-column align="right" key="option">
               <template #header>
                 <span style="float: left">操作</span>
@@ -16,71 +34,24 @@
                 <el-col style="margin: 5px">
                   <el-button type="warning" @click="clickChange(scope.$index,scope.row)">修改</el-button>
                 </el-col>
-                <el-col style="margin: 5px">
-                  <el-popconfirm
-                      confirm-button-text="确定"
-                      cancel-button-text="取消"
-                      icon-color="red"
-                      :title="ensureTitle"
-                      @confirm="clickDelete(scope.$index)"
-                  >
-                    <template #reference>
-                      <el-button type="danger"
-                                 @click="this.ensureTitle = '删除' + this.dataList[scope.$index].tName + '?' ">删除
-                      </el-button>
-                    </template>
-                  </el-popconfirm>
-                </el-col>
               </template>
             </el-table-column>
           </el-table>
         </div>
-        <div class="block" style="text-align: center; margin-top: 30px">
-          <el-row>
-            <el-col :span="8" :offset="8">
-              <div>
-                <el-pagination v-show="this.total/this.pageSize > 1"
-                               @size-change="handleSizeChange"
-                               @current-change="handleCurrentChange"
-                               :currentPage=currentPage
-                               :page-size=pageSize
-                               layout="prev, pager, next, jumper"
-                               :total=total
-                >
-                </el-pagination>
-              </div>
-            </el-col>
-            <el-col :span="4" :offset="4">
-              <div>
-                <el-button style="font-weight: bold" auto-insert-space="true"
-                           type="primary" size="large" @click="clickAdd">
-                  新增
-                </el-button>
-              </div>
-            </el-col>
-          </el-row>
-        </div>
       </el-col>
     </el-row>
-    <el-dialog v-model="dialogFormVisible" title="新增类型" :before-close="hideCommit">
-      <el-form ref="formRef" :model="form" label-width="120px">
-        <el-form-item label="类型名称">
-          <el-input v-model="form.name"></el-input>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="hideCommit">取消</el-button>
-        <el-button type="primary" @click="commitAdd" v-loading="loading"
-        >提交</el-button
-        >
-      </span>
-      </template>
-    </el-dialog>
-    <el-dialog v-model="dialogChangeVisible" title="修改类型" :before-close="hideChange">
+    <el-dialog v-model="dialogChangeVisible" title="属性配置" :before-close="hideChange">
       <el-form ref="formRef" :model="changeList" label-width="120px">
-        <el-form-item label="类型名称">
-          <el-input v-model="changeList.tName"></el-input>
+        <el-form-item label="属性选择">
+          <el-select v-model="selectedPropties" multiple placeholder="请选择属性">
+            <el-option
+                v-for="item in propties"
+                :key="item.pCode"
+                :label="item.pName"
+                :value="item.pCode"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -99,15 +70,26 @@
 
 import request from "../utils/request";
 import {ElNotification} from "element-plus";
+import {Search} from "@element-plus/icons";
 
 export default {
+
   name: "Type",
+  components:{
+    Search
+  },
   data() {
     return {
       // 表内数据
       dataList: [],
 
-      // 修改员工信息的临时列表
+      // 查询到的属性
+      propties: [],
+
+      select: '',
+      keywordInput: '',
+
+      // 修改信息的临时列表
       changeList: [],
 
       // 删除确认提示文字
@@ -124,6 +106,9 @@ export default {
 
       // 是否显示修改弹窗
       dialogChangeVisible: false,
+
+      // 属性配置 选择的属性
+      selectedPropties: [],
 
       // 新增数据保存
       form: [],
@@ -272,5 +257,11 @@ export default {
 .el-table-column {
   font-weight: bold;
   background-color: #99a9bf;
+}
+
+.el-row{
+  margin-bottom: 0;
+  display: flex;
+  flex-wrap: wrap
 }
 </style>

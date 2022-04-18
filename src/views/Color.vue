@@ -119,7 +119,7 @@ import request from "../utils/request";
 import {ElNotification} from "element-plus";
 
 export default {
-  name: "User",
+  name: "Color",
   data() {
     return {
       opTableData: [],

@@ -1,8 +1,34 @@
 <template>
-  <div style="background-color: rgba(219,229,177,0.61)">
-  <div id="login-box" v-loading="loading" style="height: 100%; width: 100%">
-    <h1>登录</h1>
-    <div class="form">
+  <div class="father" v-loading="loading" style="height: 100%; width: 100%">
+    <div class="form" style="place-content: center">
+      <el-form class="login-container" label-position="left" label-width="0px">
+        <h3 class="login_title">系统登录</h3>
+        <el-form-item>
+          <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="账号" style="font-size: 16px"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input type="password" v-on:keyup.enter = "login2sys" v-model="loginForm.password" auto-complete="off" placeholder="密码"></el-input>
+        </el-form-item>
+        <el-form-item style="width: 100%">
+          <el-button type="primary" style="width: 100%;background: #505458;border: none" @click="login2sys">登录</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="div-ba">
+        <a href="https://beian.miit.gov.cn/" target="_blank" style="text-decoration:none;color: #F3ECECFF;font-size: 14px">皖ICP备2021018240-1</a>
+      <div style="height: 8px"/>
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=34010402703598" style="text-decoration:none;color: #F3ECECFF;font-size: 14px;align-content: center">
+          <div style="display: inline-block">
+            <img src="@/assets/备案图标.png" style="float: left"/>
+            <p style="display: inline"> 皖公网安备34010402703598号</p>
+          </div>
+        </a>
+    </div>
+  </div>
+</template>
+
+<script>
+/*
       <form  method="post">
         <div class="item">
           <i class="fa fa-github-alt" style="font-size:24px"></i>
@@ -17,12 +43,8 @@
         </div>
         <button type="button" @click="login2sys">登录</button>
       </form>
-    </div>
-  </div>
-  </div>
-</template>
+ */
 
-<script>
 import request from "../utils/request";
 
 export default {
@@ -123,45 +145,48 @@ export default {
 </script>
 
 <style scoped>
+/*#poster {*/
+/*  background-color: #475669;*/
+/*  background-position: center;*/
+/*  height: 100%;*/
+/*  width: 100%;*/
+/*  background-size: cover;*/
+/*  position: fixed;*/
+/*}*/
 
-body {
-  margin: 0;
+.father{
+  position : absolute;
+  width : 100%;
+  height : 100%;
+  background-color: rgba(1,10,16,0.8);
 }
-#login-box{
-  width:30%;
-  height:auto;
-  margin: 13% auto 0;
-  text-align:center;
-  background:#00000060;
-  padding:20px 50px;
+
+.div-ba{
+  position: fixed;
+  width: 100%;
+  bottom: 10px;
+  place-content: center;
+  text-align: center;
+  }
+
+.login-container {
+  position: center;
+  text-align: center;
+
+  border-radius: 15px;
+  background-clip: padding-box;
+  margin: 200px auto;
+
+  width: 400px;
+  padding: 35px 35px 15px 35px;
+  background: #babdc4;
+  border: 1px solid #a8aab1;
+  box-shadow: 0 0 25px #acb3c2;
 }
-#login-box h1{
-  color:#fff;
-}
-#login-box .form .item{
-  margin-top:15px;
-}
-#login-box .form .item i{
-  font-size:18px;
-  color:#fff;
-}
-#login-box .form .item input{
-  width:180px;
-  font-size:18px;
-  border:0;
-  border-bottom:2px solid #fff;
-  padding:5px 10px;
-  background: rgba(255, 255, 255, 0.32);
-  color:#fff;
-}
-#login-box 	button{
-  margin-top:20px;
-  width:190px;
-  height:30px;
-  font-size:20px;
-  font-weight:700;
-  color: rgba(70, 71, 62, 0.72);
-  border:0;
-  border-radius:15px;
+
+.login_title {
+  margin: 0 auto 40px auto;
+  text-align: center;
+  color: #505458;
 }
 </style>

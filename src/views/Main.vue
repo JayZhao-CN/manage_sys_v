@@ -4,7 +4,7 @@
   <!--      侧边栏-->
   <Aside/>
   <!--    主体-->
-  <div>
+  <div style="margin-left: 0">
     <!--      内容-->
     <router-view/>
   </div>

@@ -1,6 +1,4 @@
 <template>
-  <!--  <div style="display: flow; min-height: calc(100vh - 65px); min-width: calc(100vw - 205px)">-->
-
     <div style="margin: 5px">
       <el-select v-model="value" placeholder="请选择操作表">
         <el-option

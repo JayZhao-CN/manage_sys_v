@@ -1,6 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import Home from '../views/Home.vue'
-import Add from "../views/Add";
 import Update from "../views/Update";
 import Delete from "../views/Delete";
 import Login from "../views/Login";
@@ -11,6 +10,10 @@ import Color from "../views/Color";
 import Style from "../views/Style";
 import Size from "../views/Size";
 import Type from "../views/Type";
+import Process from "../views/Process";
+import Product from "../views/Product";
+import TypePropties from "../views/TypePropties";
+import TypeProcess from "../views/TypeProcess";
 
 const routes = [
     {
@@ -52,14 +55,24 @@ const routes = [
                 component: Type
             },
             {
-                path: '/update',
-                name: 'Update',
-                component: Update
+                path: '/process',
+                name: 'Process',
+                component: Process
             },
             {
-                path: '/delete',
-                name: 'Delete',
-                component: Delete
+                path: '/product',
+                name: 'Product',
+                component: Product
+            },
+            {
+                path: '/propties',
+                name: 'TypePropties',
+                component: TypePropties
+            },
+            {
+                path: '/type_process',
+                name: 'TypeProcess',
+                component: TypeProcess
             }
         ]
     },

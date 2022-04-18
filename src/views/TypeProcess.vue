@@ -138,7 +138,7 @@
                 v-for="item in position"
                 :key="item.pCode"
                 :label="item.pName"
-                :value="item.pCode"
+                :value="item.pName"
             >
             </el-option>
           </el-select>

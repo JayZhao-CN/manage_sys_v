@@ -4,9 +4,11 @@
   <!--      侧边栏-->
   <Aside/>
   <!--    主体-->
-  <div style="margin-left: 0">
+  <div style="margin-left: 0; margin-bottom: 0">
     <!--      内容-->
+    <el-scrollbar height = "calc(100vh - 65px)">
     <router-view/>
+    </el-scrollbar>
   </div>
 </template>
 

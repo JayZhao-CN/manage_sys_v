@@ -62,6 +62,9 @@ export default {
       loading:false,
     }
   },
+  mounted() {
+    document.title="登录"
+  },
   created() {
   },
   methods: {

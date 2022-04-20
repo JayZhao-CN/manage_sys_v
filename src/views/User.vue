@@ -365,7 +365,7 @@ export default {
 
     // 修改按钮
     async clickChange(index) {
-      this.changeList = this.dataList[index]
+      this.changeList = Object.assign({}, this.dataList[index])
       await this.queryPosition()
       let rowPosition = this.changeList.uPosition;
       let rowPositions = rowPosition.toString().split("/");

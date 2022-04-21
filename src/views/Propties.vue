@@ -5,9 +5,8 @@
         <div>
           <el-table :data="dataList" ref="multipleTable" style="font-weight: bold; font-size: 18px"
                     :header-cell-style="{background:'#d0d3d7',color:'#555555'}" stripe>
-            <el-table-column property="prcId" label="ID" key="prcId"/>
-            <el-table-column property="prcName" label="工序名称" key="prcName"/>
-            <el-table-column property="prcCode" label="工序编号" key="prcCode"/>
+            <el-table-column property="proptiesName" label="属性名称" key="proptiesName"/>
+            <el-table-column property="proptiesCode" label="属性编号" key="proptiesCode"/>
             <el-table-column align="right" key="option">
               <template #header>
                 <span style="float: left">操作</span>
@@ -140,7 +139,7 @@ export default {
     // 查询表内数据
     queryData() {
       // get 页面和公司名
-      request.get("/sys_process/detail" + "?" + "pageNum=" + this.pageNum + "&&" + "pageSize=" + this.pageSize + "&&" + "prcCompany=" + this.$store.state.currentCompany.companyCode).then(res => {
+      request.get("/sys_propties/detail" + "?" + "pageNum=" + this.pageNum + "&&" + "pageSize=" + this.pageSize + "&&" + "company=" + this.$store.state.currentCompany.companyCode).then(res => {
         console.log(res);
         this.dataList = res.dataInfo.dataInfo.list !== null ? res.dataInfo.dataInfo.list : []
         // console.log(this.dataList);

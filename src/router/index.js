@@ -14,6 +14,7 @@ import Process from "../views/Process";
 import Product from "../views/Product";
 import TypePropties from "../views/TypePropties";
 import TypeProcess from "../views/TypeProcess";
+import Propties from "../views/Propties";
 
 const routes = [
     {
@@ -66,6 +67,11 @@ const routes = [
             },
             {
                 path: '/propties',
+                name: 'Propties',
+                component: Propties
+            },
+            {
+                path: '/type_propties',
                 name: 'TypePropties',
                 component: TypePropties
             },

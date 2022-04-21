@@ -74,8 +74,10 @@
 
         // 修改信息的临时列表
         changeList: [],
-        // 修改员工 选择的岗位
+        // 当前显示的配置
         currentProcess: [],
+        // 还未修改的配置
+        unchangedCurrentProcess: [],
 
         // 删除确认提示文字
         ensureTitle: "",
@@ -167,12 +169,6 @@
       },
 
       // 修改按钮
-      // async clickChange(index) {
-      //   this.changeList = Object.assign({}, this.dataList[index])
-      //   this.dialogChangeVisible = true
-      // },
-
-      // 修改按钮
       async clickChange(index) {
         this.changeList = Object.assign({}, this.dataList[index])
         await this.queryProcess()
@@ -184,20 +180,16 @@
           if (value !== '') {
             that.processes.forEach(function (process) {
               if (process.prcCode === value) {
-                that.currentProcess.push(process.prcName)
+                that.currentProcess.push(process.prcCode)
               }
             })
           }
         })
+          this.unchangedCurrentProcess = Object.assign({}, this.currentProcess)
       }
         this.dialogChangeVisible = true
       },
 
-      // 隐藏修改框
-      // hideChange() {
-      //   this.loading = false
-      //   this.dialogChangeVisible = false
-      // },
       // 隐藏修改框
       hideChange(){
         this.loading = false
@@ -207,18 +199,20 @@
 
       // 提交修改信息
       async commitChange() {
-        if (this.changeList.tName === "") {
-          this.msgAlert("失败", "尺寸名称不能为空！", "error")
+
+        if (this.unchangedCurrentProcess === this.currentProcess) {
+          this.msgAlert("提示", "配置未改变", "warning")
+          this.hideChange();
           return
         }
 
         this.loading = true
         let formData = new FormData();
-        formData.set("tId", this.changeList.tId)
-        formData.set("tName", this.changeList.tName)
-        formData.set("tCompany", this.$store.state.currentCompany.companyCode)
+        formData.set("productTypeCode", this.changeList.typeCode)
+        formData.set("processCodes", this.currentProcess)
+        formData.set("company", this.$store.state.currentCompany.companyCode)
 
-        await request.post("/sys_type/change", formData).then(res => {
+        await request.post("/sys_product_process/change", formData).then(res => {
           this.loading = false
           if (res.code === 100) {
             this.loading = false
@@ -226,7 +220,8 @@
             res.dataInfo.state === 1 ? this.dialogFormVisible = false : this.dialogFormVisible = false
             this.queryData()
             this.dialogChangeVisible = false
-            this.msgAlert("成功", "修改成功！", "success")
+            this.currentProcess = []
+            this.msgAlert("成功", "配置成功！", "success")
           } else {
             this.loading = false
             this.msgAlert("失败", res.dataInfo.msg, "warning")
@@ -234,15 +229,6 @@
 
         })
       },
-
-
-      // 删除按钮
-      clickDelete(item) {
-        request.get("/sys_type/delete" + "?" + "tId=" + this.dataList[item].tId + "&&" + "tCompany=" + this.$store.state.currentCompany.companyCode).then(res => {
-          this.queryData()
-        })
-      },
-
 
       // 消息提示
       msgAlert(title, msg, type) {

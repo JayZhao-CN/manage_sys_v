@@ -55,7 +55,7 @@
         </template>
         <el-menu-item-group>
           <template #title>生产配置</template>
-          <el-menu-item index="propties">产品-属性</el-menu-item>
+          <el-menu-item index="type_propties">产品-属性</el-menu-item>
           <el-menu-item index="type_process">产品-工序</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
@@ -68,7 +68,7 @@
         </el-menu-item-group>
         <el-menu-item-group>
           <template #title>扩展</template>
-          <el-menu-item index="color">属性扩展</el-menu-item>
+          <el-menu-item index="propties">属性扩展</el-menu-item>
         </el-menu-item-group>
       </el-sub-menu>
 

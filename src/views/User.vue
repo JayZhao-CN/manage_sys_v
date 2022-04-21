@@ -374,7 +374,7 @@ export default {
         if (value !== ''){
           that.position.forEach(function (position) {
             if (position.pCode === value) {
-              that.currentPosition.push(position.pName)
+              that.currentPosition.push(position.pCode)
             }
           })
         }

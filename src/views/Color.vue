@@ -34,7 +34,7 @@
                   >
                     <template #reference>
                       <el-button type="danger"
-                                 @click="this.ensureTitle = '删除' + this.dataList[scope.$index].uUsername + '?' ">删除
+                                 @click="this.ensureTitle = '删除' + this.dataList[scope.$index].cName + '?' ">删除
                       </el-button>
                     </template>
                   </el-popconfirm>

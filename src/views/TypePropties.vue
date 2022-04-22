@@ -29,10 +29,10 @@
         <el-form-item label="工序">
           <el-select v-model="currentPropties" multiple placeholder="请选择工序">
             <el-option
-                    v-for="item in Proptieses"
-                    :key="item.prcCode"
-                    :label="item.prcName"
-                    :value="item.prcCode"
+                    v-for="item in proptieses"
+                    :key="item.proptiesCode"
+                    :label="item.proptiesName"
+                    :value="item.proptiesCode"
             >
             </el-option>
           </el-select>
@@ -70,7 +70,7 @@
         dataList: [],
 
         // 查询到的属性
-        Proptieses: [],
+        proptieses: [],
 
         // 修改信息的临时列表
         changeList: [],
@@ -120,17 +120,11 @@
         })
       },
 
-      // 查询工序信息
+      // 查询属性信息
       async queryPropties() {
-        await request.get("/sys_propties/detail" + "?" + "company=" + this.$store.state.currentCompany.companyCode).then(res => {
-          this.Proptieses = res.dataInfo.dataInfo.list !== null ? res.dataInfo.dataInfo.list : []
+        await request.get("/sys_propties/detail" + "?" + "isAll=true" + "&&company=" + this.$store.state.currentCompany.companyCode).then(res => {
+          this.proptieses = res.dataInfo.dataInfo.list !== null ? res.dataInfo.dataInfo.list : []
         })
-      },
-
-
-      // 添加按钮
-      clickAdd() {
-        this.dialogFormVisible = true
       },
 
       // 隐藏提交弹窗
@@ -140,52 +134,26 @@
         this.addHad = false
       },
 
-      // 提交添加信息
-      async commitAdd() {
-        if (this.form.name === "" || this.form.name === undefined) {
-          this.msgAlert("失败", "请填写类型名称！", "error")
-          return
-        }
-
-        this.loading = true
-        let formData = new FormData();
-        formData.set("tName", this.form.name)
-        formData.set("tCompany", this.$store.state.currentCompany.companyCode)
-
-        await request.post("/sys_type/add", formData).then(res => {
-          this.loading = false
-          if (res.code === 100) {
-            this.loading = false
-            this.form = []
-            res.dataInfo.state === 1 ? this.dialogFormVisible = false : this.dialogFormVisible = false
-            this.queryData()
-            this.msgAlert("成功", "添加成功！", "success")
-          } else {
-            this.loading = false
-            this.msgAlert("失败", res.dataInfo.msg, "warning")
-          }
-
-        })
-      },
-
       // 修改按钮
       async clickChange(index) {
         this.changeList = Object.assign({}, this.dataList[index])
         await this.queryPropties()
-        let rowPropties = this.changeList.ProptiesCodes;
+        let rowPropties = this.changeList.proptiesCodes;
         if (rowPropties !== null) {
           let rowProptieses = rowPropties.toString().split("/");
           let that = this
           rowProptieses.forEach(function (value) {
             if (value !== '') {
-              that.Proptieses.forEach(function (Propties) {
-                if (Propties.prcCode === value) {
-                  that.currentPropties.push(Propties.prcCode)
+              that.proptieses.forEach(function (propties) {
+                if (propties.proptiesCode === value) {
+                  that.currentPropties.push(propties.proptiesCode)
+
+                  that.unchangedcurrentPropties.push(propties.proptiesCode)
                 }
               })
             }
           })
-          this.unchangedcurrentPropties = Object.assign({}, this.currentPropties)
+          // this.unchangedcurrentPropties = Object.assign({}, this.currentPropties)
         }
         this.dialogChangeVisible = true
       },
@@ -200,7 +168,7 @@
       // 提交修改信息
       async commitChange() {
 
-        if (this.unchangedcurrentPropties === this.currentPropties) {
+        if (this.unchangedcurrentPropties.toString() === this.currentPropties.toString()) {
           this.msgAlert("提示", "配置未改变", "warning")
           this.hideChange();
           return
@@ -209,7 +177,7 @@
         this.loading = true
         let formData = new FormData();
         formData.set("productTypeCode", this.changeList.typeCode)
-        formData.set("ProptiesCodes", this.currentPropties)
+        formData.set("proptiesCodes", this.currentPropties)
         formData.set("company", this.$store.state.currentCompany.companyCode)
 
         await request.post("/sys_product_propties/change", formData).then(res => {

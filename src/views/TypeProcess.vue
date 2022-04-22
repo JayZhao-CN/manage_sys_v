@@ -127,45 +127,11 @@
         })
       },
 
-
-      // 添加按钮
-      clickAdd() {
-        this.dialogFormVisible = true
-      },
-
       // 隐藏提交弹窗
       hideCommit() {
         this.loading = false
         this.dialogFormVisible = false
         this.addHad = false
-      },
-
-      // 提交添加信息
-      async commitAdd() {
-        if (this.form.name === "" || this.form.name === undefined) {
-          this.msgAlert("失败", "请填写类型名称！", "error")
-          return
-        }
-
-        this.loading = true
-        let formData = new FormData();
-        formData.set("tName", this.form.name)
-        formData.set("tCompany", this.$store.state.currentCompany.companyCode)
-
-        await request.post("/sys_type/add", formData).then(res => {
-          this.loading = false
-          if (res.code === 100) {
-            this.loading = false
-            this.form = []
-            res.dataInfo.state === 1 ? this.dialogFormVisible = false : this.dialogFormVisible = false
-            this.queryData()
-            this.msgAlert("成功", "添加成功！", "success")
-          } else {
-            this.loading = false
-            this.msgAlert("失败", res.dataInfo.msg, "warning")
-          }
-
-        })
       },
 
       // 修改按钮
@@ -181,11 +147,12 @@
             that.processes.forEach(function (process) {
               if (process.prcCode === value) {
                 that.currentProcess.push(process.prcCode)
+                that.unchangedCurrentProcess.push(process.prcCode)
               }
             })
           }
         })
-          this.unchangedCurrentProcess = Object.assign({}, this.currentProcess)
+          // this.unchangedCurrentProcess = Object.assign({}, this.currentProcess)
       }
         this.dialogChangeVisible = true
       },
@@ -200,7 +167,7 @@
       // 提交修改信息
       async commitChange() {
 
-        if (this.unchangedCurrentProcess === this.currentProcess) {
+        if (this.unchangedCurrentProcess.toString() === this.currentProcess.toString()) {
           this.msgAlert("提示", "配置未改变", "warning")
           this.hideChange();
           return

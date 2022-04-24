@@ -434,7 +434,6 @@ export default {
       await this.$refs.upload.submit();
     },
 
-
     // 校验文件格式
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg' || 'image/png' || 'image/jpg'

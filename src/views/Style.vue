@@ -226,12 +226,10 @@ export default {
       })
     },
 
-
     // 添加按钮
     clickAdd() {
       this.dialogFormVisible = true
     },
-
 
     // 隐藏提交弹窗
     hideCommit() {
@@ -331,7 +329,6 @@ export default {
       this.queryData()
       console.log(`当前页: ${val}`)
     },
-
 
     // 添加图片成功
     handleAvatarSuccess(file,fileList) {

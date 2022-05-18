@@ -5,9 +5,12 @@
         <div>
           <el-table :data="dataList" ref="multipleTable" style="font-weight: bold; font-size: 18px"
                     :header-cell-style="{background:'#d0d3d7',color:'#555555'}" stripe>
-            <el-table-column property="prcId" label="ID" key="prcId"/>
-            <el-table-column property="prcName" label="工序名称" key="prcName"/>
-            <el-table-column property="prcCode" label="工序编号" key="prcCode"/>
+            <el-table-column property="prBatch" label="产品批次" key="prBatch"/>
+            <el-table-column property="prTypeCodeName" label="产品种类" key="prTypeCodeName"/>
+            <el-table-column property="prPerCount" label="件/层" key="prPerCount"/>
+            <el-table-column property="prUnitCount" label="层" key="prUnitCount"/>
+            <el-table-column property="prCount" label="总数量" key="prCount"/>
+            <el-table-column property="prTimeFormat" label="时间" key="prTimeFormat"/>
             <el-table-column align="right" key="option">
               <template #header>
                 <span style="float: left">操作</span>
@@ -140,7 +143,7 @@ export default {
     // 查询表内数据
     queryData() {
       // get 页面和公司名
-      request.get("/sys_process/detail" + "?" + "pageNum=" + this.pageNum + "&&" + "pageSize=" + this.pageSize + "&&" + "prcCompany=" + this.$store.state.currentCompany.companyCode).then(res => {
+      request.get("/sys_product/detail" + "?" + "pageNum=" + this.pageNum + "&&" + "pageSize=" + this.pageSize + "&&" + "company=" + this.$store.state.currentCompany.companyCode).then(res => {
         console.log(res);
         this.dataList = res.dataInfo.dataInfo.list !== null ? res.dataInfo.dataInfo.list : []
         // console.log(this.dataList);

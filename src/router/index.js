@@ -1,7 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import Home from '../views/Home.vue'
-import Update from "../views/Update";
-import Delete from "../views/Delete";
 import Login from "../views/Login";
 import Main from "../views/Main";
 import Personal from "../views/Personal";
@@ -15,6 +13,7 @@ import Product from "../views/Product";
 import TypePropties from "../views/TypePropties";
 import TypeProcess from "../views/TypeProcess";
 import Propties from "../views/Propties";
+import ProductOther from "../views/ProductOther";
 
 const routes = [
     {
@@ -63,7 +62,7 @@ const routes = [
             {
                 path: '/product',
                 name: 'Product',
-                component: Product
+                component: ProductOther
             },
             {
                 path: '/propties',

@@ -86,13 +86,15 @@
           <el-input-number v-model="form.count" @change="handleCountChange" :min="1" label="如 20 层"></el-input-number>
         </el-form-item>
 
+        <el-form-item label="拆分份数">
+          <el-input-number v-model="form.break" @change="handleBreakChange" :min="1" label="如分为 4 份"></el-input-number>
+        </el-form-item>
       </el-form>
       <template #footer>
       <span class="dialog-footer">
         <el-button @click="hideCommit">取消</el-button>
         <el-button type="primary" @click="commitAdd" v-loading="loading"
-        >提交</el-button
-        >
+        >提交</el-button>
       </span>
       </template>
     </el-dialog>
@@ -105,32 +107,11 @@
                     :header-cell-style="{background:'#d0d3d7',color:'#555555'}" stripe
                     height="350"
                     border>
-            <el-table-column property="name"
-                             label="名称" key="name"/>
-            <el-table-column v-if="proptiesType==='color' || proptiesType==='yes'">
-              <template #header>
-                <span style="float: left">颜色展示</span>
-              </template>
-              <template #default="scope">
-                <el-card shadow="always"
-                         :style=" {'background': dialogDataList[scope.$index].color}"></el-card>
-              </template>
-            </el-table-column>
-            <el-table-column v-if="proptiesType==='image' || proptiesType==='yes'">
-              <template #header>
-                <span style="float: left">图片展示</span>
-              </template>
-              <template #default="scope">
-                <el-image
-                        style="width: 100px; height: 100px"
-                        :preview-src-list="imgList"
-                        :initial-index="scope.$index"
-                        :src="dialogDataList[scope.$index].image"
-                        fit="cover"
-                >
-                </el-image>
-              </template>
-            </el-table-column>
+            <el-table-column property="prBreakCodeSim"
+                             label="编号" key="prBreakCodeSim"/>
+            <el-table-column property="count"
+                             label="数量" key="count"/>
+
             <el-table-column align="right" key="option">
               <template #header>
                 <span style="float: left">操作</span>
@@ -140,22 +121,6 @@
                   <el-button type="warning" @click="dialog2clickChange(scope.$index,scope.row)">
                     修改
                   </el-button>
-                </el-col>
-                <el-col style="margin: 5px">
-                  <el-popconfirm
-                          confirm-button-text="确定"
-                          cancel-button-text="取消"
-                          icon-color="red"
-                          :title="ensureTitle"
-                          @confirm="dialog2clickDelete(scope.$index)"
-                  >
-                    <template #reference>
-                      <el-button type="danger"
-                                 @click="this.ensureTitle = '删除' + this.dialogDataList[scope.$index].name + '?' ">
-                        删除
-                      </el-button>
-                    </template>
-                  </el-popconfirm>
                 </el-col>
               </template>
             </el-table-column>
@@ -329,7 +294,8 @@
         form: {
           batch: 1,
           per: 1,
-          count: 1
+          count: 1,
+          break: 1,
         },
 
         dialogAddForm: [],
@@ -387,6 +353,10 @@
       handleCountChange(value) {
         console.log(value);
       },
+      // 当拆分数改变时
+      handleBreakChange(value) {
+        console.log(value);
+      },
 
       // 查询种类信息
       queryTypeData() {
@@ -403,13 +373,13 @@
 
       // 详情按钮
       async clickDetail(index) {
-        this.detailTitle = this.dataList[index].proptiesName + '详情'
-        this.proptiesType = this.dataList[index].proptiesType
+        this.detailTitle = this.dataList[index].prCode + '详情'
+        // this.proptiesType = this.dataList[index].proptiesType
 
         // 保存传值
-        this.proptiesCode = this.dataList[index].proptiesCode
+        // this.proptiesCode = this.dataList[index].proptiesCode
         // 查询数据
-        this.queryDialogData(this.dataList[index].proptiesCode)
+        this.queryDialogData(this.dataList[index].prCode)
         this.dialogDetailVisible = true
       },
       // 删除按钮
@@ -423,7 +393,12 @@
       hideCommit() {
         this.loading = false
         this.dialogFormVisible = false
-        this.form = []
+        this.form =  {
+          batch: 1,
+                  per: 1,
+                  count: 1,
+          break: 1,
+        }
       },
       // 隐藏详情框
       hideDetail() {
@@ -449,13 +424,19 @@
         formData.set("prBatch", this.form.batch)
         formData.set("prPerCount", this.form.per)
         formData.set("prUnitCount", this.form.count)
+        formData.set("breakCount", this.form.break)
         formData.set("prCompany", this.$store.state.currentCompany.companyCode)
 
         await request.post("/sys_product/add", formData).then(res => {
           this.loading = false
           if (res.code === 100) {
             this.loading = false
-            this.form = []
+            this.form = {
+              batch: 1,
+                      per: 1,
+                      count: 1,
+              break: 1,
+            },
             res.dataInfo.state === 1 ? this.dialogFormVisible = false : this.dialogFormVisible = false
             this.queryData()
             this.msgAlert("成功", "添加成功！", "success")
@@ -469,18 +450,18 @@
 
       /**
        * 弹窗内数据操作
-       * @param proptiesCode
+       * @param
        */
       // 查询弹窗表内数据
-      queryDialogData(proptiesCode) {
+      queryDialogData(prCode) {
         // get 页面和公司名
-        request.get("/sys_ext_propties/detail/" + proptiesCode + "?" + "pageNum=" + this.dialog2pageNum + "&&" + "pageSize=" + this.dialog2pageSize + "&&" + "company=" + this.$store.state.currentCompany.companyCode).then(res => {
+        request.get("/sys_product/break/detail" + "?" + "pageNum=" + this.dialog2pageNum + "&&" + "pageSize=" + this.dialog2pageSize + "&&" + "prCode=" + prCode).then(res => {
           console.log(res);
           this.dialogDataList = res.dataInfo.dataInfo.list !== null ? res.dataInfo.dataInfo.list : []
 
-          for (let i = 0; i < this.dialogDataList.length; i++) {
-            this.imgList[i] = (this.dialogDataList[i].image)
-          }
+          // for (let i = 0; i < this.dialogDataList.length; i++) {
+          //   this.imgList[i] = (this.dialogDataList[i].image)
+          // }
           // console.log(this.dataList);
           this.dialog2currentPage = res.dataInfo.dataInfo.pageNum
           this.dialog2pageNum = res.dataInfo.dataInfo.pageNum
